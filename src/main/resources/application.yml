@@ -11,4 +11,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    show-sql: true
+    show-sql: false
+
+info:
+  app:
+    description: '@project.description@'
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      version: '@java.version@'
+    name: '@project.name@'
+    version: '@project.version@'
+management:
+  endpoint:
+    health:
+      show-details: always
