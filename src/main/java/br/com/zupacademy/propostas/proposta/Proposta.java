@@ -2,10 +2,7 @@ package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.validacao.CpfCnpj;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,6 +33,8 @@ public class Proposta {
     @NotNull
     @Positive
     private BigDecimal salario;
+
+    private String estadoProposta;
 
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = documento;
@@ -71,5 +70,9 @@ public class Proposta {
 
     public BigDecimal getSalario() {
         return salario;
+    }
+
+    public void setEstadoProposta(String estadoProposta) {
+        this.estadoProposta = estadoProposta;
     }
 }
