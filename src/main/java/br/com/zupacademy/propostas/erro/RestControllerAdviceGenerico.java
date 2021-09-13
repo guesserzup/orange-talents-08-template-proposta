@@ -24,10 +24,16 @@ public class RestControllerAdviceGenerico {
         RetornaErro erros = new RetornaErro();
 
         globalErrors.forEach(erro -> erros.AddError(erro.getDefaultMessage()));
-        fieldErrors.forEach(erro -> erros.addErrorField(erro.getField(), erro.getRejectedValue(),
-                erro.getDefaultMessage()));
+        fieldErrors.forEach(erro -> erros.addErrorField(erro.getField(),
+                erro.getDefaultMessage(), erro.getRejectedValue()));
 
         return erros;
+    }
+
+    @ExceptionHandler(RegraNegocioException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public RetornaErro validacaoRegraDocDuplicado(RegraNegocioException erro){
+        return erro.getErroRetorno();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

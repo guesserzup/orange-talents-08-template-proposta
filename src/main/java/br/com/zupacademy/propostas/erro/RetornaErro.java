@@ -14,12 +14,12 @@ public class RetornaErro {
         global.add(errorMessage);
     }
 
-    public void addErrorField (String campo, Object valor, String mensagem){
+    public void addErrorField (String message, String field, Object value){
 
         HashMap<String,Object> map = new HashMap<>();
-        map.put("Field",campo);
-        map.put("Value",valor);
-        map.put("Message",mensagem);
+        map.put("Field",field);
+        map.put("Value",value);
+        map.put("Message",message);
         map.put("Time", LocalDateTime.now());
 
         fields.add(map);

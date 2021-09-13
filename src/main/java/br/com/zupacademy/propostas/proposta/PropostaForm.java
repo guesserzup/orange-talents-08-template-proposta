@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.validacao.CpfCnpj;
+import br.com.zupacademy.propostas.validacao.UniqueValue;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ public class PropostaForm {
 
     @NotBlank
     @CpfCnpj
+    @UniqueValue(domainClass = Proposta.class, fieldName = "documento")
     private String documento;
 
     @Email
