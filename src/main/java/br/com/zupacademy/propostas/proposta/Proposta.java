@@ -1,5 +1,6 @@
 package br.com.zupacademy.propostas.proposta;
 
+import br.com.zupacademy.propostas.api.cartao.Cartao;
 import br.com.zupacademy.propostas.validacao.CpfCnpj;
 
 import javax.persistence.*;
@@ -34,7 +35,10 @@ public class Proposta {
     @Positive
     private BigDecimal salario;
 
+    @NotNull
     private String estadoProposta;
+
+    private String numCartao;
 
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = documento;
@@ -75,4 +79,8 @@ public class Proposta {
     public void setEstadoProposta(String estadoProposta) {
         this.estadoProposta = estadoProposta;
     }
+
+    public String getNumCartao() { return numCartao; }
+
+    public void setNumCartao(String numCartao) { this.numCartao = numCartao; }
 }

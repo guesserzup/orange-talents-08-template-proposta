@@ -1,4 +1,4 @@
-package br.com.zupacademy.propostas.api;
+package br.com.zupacademy.propostas.api.analise;
 
 import br.com.zupacademy.propostas.validacao.CpfCnpj;
 

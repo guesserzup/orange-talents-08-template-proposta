@@ -25,3 +25,9 @@ management:
   endpoint:
     health:
       show-details: always
+
+#Rotina Cartão
+associar:
+  cartao:
+    tempo:
+      schedule: 20000

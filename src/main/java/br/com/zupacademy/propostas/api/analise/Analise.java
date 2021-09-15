@@ -1,4 +1,4 @@
-package br.com.zupacademy.propostas.api;
+package br.com.zupacademy.propostas.api.analise;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +13,9 @@ public class Analise {
     private Long idProposta;
 
     private String documento;
+
     private String nome;
+
     private String resultadoSolicitacao;
 
     @Deprecated
