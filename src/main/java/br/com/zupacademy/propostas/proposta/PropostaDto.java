@@ -9,13 +9,18 @@ public class PropostaDto {
     private String nome;
     private String endereco;
     private BigDecimal salario;
+    private String estadoProposta;
+    private String numeroCartao;
 
-    public PropostaDto(String documento, String email, String nome, String endereco, BigDecimal salario) {
+    public PropostaDto(String documento, String email, String nome, String endereco, BigDecimal salario,
+                       String estadoProposta, String numCartao) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;
         this.salario = salario;
+        this.estadoProposta = estadoProposta;
+        this.numeroCartao = numCartao;
     }
 
     public String getDocumento() {
@@ -37,4 +42,8 @@ public class PropostaDto {
     public BigDecimal getSalario() {
         return salario;
     }
+
+    public String getEstadoProposta() { return estadoProposta; }
+
+    public String getNumeroCartao() { return numeroCartao; }
 }

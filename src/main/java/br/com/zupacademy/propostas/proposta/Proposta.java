@@ -76,6 +76,8 @@ public class Proposta {
         return salario;
     }
 
+    public String getEstadoProposta() { return estadoProposta; }
+
     public void setEstadoProposta(String estadoProposta) {
         this.estadoProposta = estadoProposta;
     }

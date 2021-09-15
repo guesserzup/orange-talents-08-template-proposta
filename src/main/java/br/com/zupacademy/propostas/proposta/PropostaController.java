@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -41,6 +42,18 @@ public class PropostaController {
     @Autowired
     private AssociaCartao associaCartao;
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public PropostaDto busca(@PathVariable("id") Long idProposta) {
+        
+        Proposta proposta = propostaRepository
+                .findById(idProposta)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposta informada não existe"));
+
+        return new PropostaDto(proposta.getDocumento(), proposta.getEmail(), proposta.getNome(),
+                proposta.getEndereco(), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> cadastra(@RequestBody @Valid PropostaForm form, UriComponentsBuilder uri) {
@@ -60,6 +73,6 @@ public class PropostaController {
 
         URI location = uri.path("/propostas/{id}").build(proposta.getId());
         return ResponseEntity.created(location).body(new PropostaDto(proposta.getDocumento(), proposta.getEmail(),
-                proposta.getNome(), proposta.getEndereco(), proposta.getSalario()));
+                proposta.getNome(), proposta.getEndereco(), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
     }
 }
