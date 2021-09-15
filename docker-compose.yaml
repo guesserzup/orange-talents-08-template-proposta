@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   zookeeper:
     image: "confluentinc/cp-zookeeper:5.2.1"
     environment:
@@ -135,6 +134,22 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
+
+  proposta:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: proposta
+    ports:
+      - 8080:8080
+    environment:
+      FINANCEIRO_URL: http://analise:9999/api/solicitacao
+      APICARTOES_URL: http://contas:8888/api/cartoes
+      SERVER_PORT: 8080
+    depends_on:
+      - analise
+      - contas
+      - postgres
 
 volumes:
   grafana-volume:
