@@ -2,7 +2,9 @@ package br.com.zupacademy.propostas.api.cartao.bloqueio;
 
 import br.com.zupacademy.propostas.api.cartao.Cartao;
 import br.com.zupacademy.propostas.api.cartao.CartaoRepository;
+import br.com.zupacademy.propostas.api.cartao.connector.CartaoConnector;
 import br.com.zupacademy.propostas.erro.RegraNegocioException;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +24,9 @@ public class BloqueioController {
     @Autowired
     private BloqueioRepository bloqueioRepository;
 
+    @Autowired
+    private CartaoConnector cartaoConnector;
+
     @Transactional
     @PostMapping("/cartao/{numCartao}/bloqueio")
     public BloqueioDto bloquear(@PathVariable("numCartao") String numCartao, HttpServletRequest request,
@@ -40,6 +45,12 @@ public class BloqueioController {
 
         String ip = request.getRemoteAddr();
         String agent = request.getHeader("User-Agent");
+
+        try {
+            cartaoConnector.bloquearCartaoSistemaLegado(new BloqueioForm(cartao.getNumCartao()));
+        } catch (FeignException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
 
         cartao.setBloqueado(true);
         Bloqueio bloqueio = new Bloqueio(ip, agent, cartao);
