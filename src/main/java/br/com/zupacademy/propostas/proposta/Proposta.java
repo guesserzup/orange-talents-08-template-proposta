@@ -40,6 +40,9 @@ public class Proposta {
 
     private String numCartao;
 
+    @OneToOne
+    private Cartao cartao;
+
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = documento;
         this.email = email;
@@ -83,6 +86,8 @@ public class Proposta {
     }
 
     public String getNumCartao() { return numCartao; }
+
+    public Cartao getCartao() { return cartao; }
 
     public void setNumCartao(String numCartao) { this.numCartao = numCartao; }
 }

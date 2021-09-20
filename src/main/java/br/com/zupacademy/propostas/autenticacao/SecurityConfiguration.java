@@ -12,19 +12,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
-                .disable()
-                .csrf()
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/actuator/health", "/proposta/**")
-                .hasAuthority("SCOPE_read")
-                .antMatchers(HttpMethod.POST, "/propostas", "/cartao/{numCartao}/biometria")
-                .hasAuthority("SCOPE_write")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+
+        http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll();
+
+//        http.cors()
+//                .disable()
+//                .csrf()
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.GET, "/actuator/health", "/proposta/**")
+//                .hasAuthority("SCOPE_read")
+//                .antMatchers(HttpMethod.POST, "/propostas", "/cartao/{numCartao}/biometria", "/cartao/{numCartao}/bloqueio")
+//                .hasAuthority("SCOPE_write")
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .oauth2ResourceServer()
+//                .jwt();
     }
 }
