@@ -12,6 +12,12 @@ spring:
       hibernate:
         format_sql: true
     show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/auth/realms/Propostas
+          jwk-set-uri: http://localhost:18080/auth/realms/Propostas/protocol/openid-connect/certs
 
 info:
   app:
