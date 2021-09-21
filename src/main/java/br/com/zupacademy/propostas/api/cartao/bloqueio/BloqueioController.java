@@ -58,7 +58,6 @@ public class BloqueioController {
         cartaoRepository.save(cartao);
         bloqueioRepository.save(bloqueio);
 
-        return new BloqueioDto(bloqueio.getHoraBloqueio(), bloqueio.getIp(), bloqueio.getAgent(),
-                bloqueio.getAgent());
+        return new BloqueioDto(bloqueio.getHoraBloqueio(), bloqueio.getIp(), bloqueio.getAgent());
     }
 }

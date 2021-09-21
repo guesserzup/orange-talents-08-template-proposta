@@ -5,9 +5,9 @@ import br.com.zupacademy.propostas.api.analise.AnaliseForm;
 import br.com.zupacademy.propostas.api.analise.AnaliseRepository;
 import br.com.zupacademy.propostas.api.analise.connector.AnaliseConnector;
 import br.com.zupacademy.propostas.api.cartao.AssociaCartao;
-import br.com.zupacademy.propostas.api.cartao.Cartao;
 import br.com.zupacademy.propostas.api.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.api.cartao.connector.CartaoConnector;
+import br.com.zupacademy.propostas.seguranca.MascaraDados;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Objects;
 
 @RestController
@@ -42,6 +41,9 @@ public class PropostaController {
     @Autowired
     private AssociaCartao associaCartao;
 
+    @Autowired
+    private MascaraDados mascaraDados;
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PropostaDto busca(@PathVariable("id") Long idProposta) {
@@ -50,8 +52,8 @@ public class PropostaController {
                 .findById(idProposta)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposta informada não existe"));
 
-        return new PropostaDto(proposta.getDocumento(), proposta.getEmail(), proposta.getNome(),
-                proposta.getEndereco(), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao());
+        return new PropostaDto(mascaraDados.generico(proposta.getDocumento()), mascaraDados.generico(proposta.getEmail()), mascaraDados.generico(proposta.getNome()),
+                mascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), mascaraDados.generico(proposta.getNumCartao()));
     }
 
     @PostMapping
@@ -72,7 +74,7 @@ public class PropostaController {
         proposta = propostaRepository.save(proposta);
 
         URI location = uri.path("/propostas/{id}").build(proposta.getId());
-        return ResponseEntity.created(location).body(new PropostaDto(proposta.getDocumento(), proposta.getEmail(),
-                proposta.getNome(), proposta.getEndereco(), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
+        return ResponseEntity.created(location).body(new PropostaDto(mascaraDados.generico(proposta.getDocumento()), mascaraDados.generico(proposta.getEmail()),
+                mascaraDados.generico(proposta.getNome()), mascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
     }
 }
