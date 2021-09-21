@@ -28,9 +28,19 @@ info:
     name: '@project.name@'
     version: '@project.version@'
 management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   endpoint:
-    health:
-      show-details: always
+    metrics:
+      enabled: false
+    prometheus:
+      enabled: true
 
 #Rotina Cartão
 associar:
