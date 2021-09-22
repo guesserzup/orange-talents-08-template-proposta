@@ -1,7 +1,15 @@
 package br.com.zupacademy.propostas.proposta;
 
+import br.com.zupacademy.propostas.api.analise.Analise;
+import br.com.zupacademy.propostas.api.analise.AnaliseForm;
+import br.com.zupacademy.propostas.api.analise.EnumResultadoAnalise;
+import br.com.zupacademy.propostas.api.analise.client.AnaliseClient;
+import br.com.zupacademy.propostas.api.cartao.AssociaCartao;
 import br.com.zupacademy.propostas.api.cartao.Cartao;
-import br.com.zupacademy.propostas.validacao.CpfCnpj;
+import br.com.zupacademy.propostas.validacao.CpfCnpj;;
+import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -12,6 +20,8 @@ import java.math.BigDecimal;
 
 @Entity
 public class Proposta {
+
+    Logger LOGGER = LoggerFactory.getLogger(Proposta.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +46,7 @@ public class Proposta {
     private BigDecimal salario;
 
     @NotNull
-    private String estadoProposta;
+    private EnumEstadoProposta estadoProposta = EnumEstadoProposta.NAO_ELEGIVEL;
 
     private String numCartao;
 
@@ -53,6 +63,28 @@ public class Proposta {
 
     @Deprecated
     public Proposta() {
+    }
+
+    public void analisaProposta(AnaliseClient analiseClient) throws FeignException {
+        AnaliseForm analiseForm = new AnaliseForm(this.getDocumento(), this.getNome(), this.getId());
+        Analise analise = null;
+
+        try {
+            analise = analiseClient.solicitaAnalise(analiseForm);
+        } catch (FeignException feignException) {
+            LOGGER.error("Erro na rotina que analisa a proposta, feignException", feignException);
+            feignException.printStackTrace();
+        }
+
+        assert analise != null;
+
+        this.estadoProposta = analise.getResultadoSolicitacao() == EnumResultadoAnalise.COM_RESTRICAO ?
+                EnumEstadoProposta.NAO_ELEGIVEL : EnumEstadoProposta.ELEGIVEL;
+    }
+
+    public void associaCartao(Cartao cartao) {
+        this.numCartao = cartao.getNumCartao();
+        this.cartao = cartao;
     }
 
     public Long getId() {
@@ -79,15 +111,9 @@ public class Proposta {
         return salario;
     }
 
-    public String getEstadoProposta() { return estadoProposta; }
-
-    public void setEstadoProposta(String estadoProposta) {
-        this.estadoProposta = estadoProposta;
-    }
+    public EnumEstadoProposta getEstadoProposta() { return estadoProposta; }
 
     public String getNumCartao() { return numCartao; }
 
     public Cartao getCartao() { return cartao; }
-
-    public void setNumCartao(String numCartao) { this.numCartao = numCartao; }
 }

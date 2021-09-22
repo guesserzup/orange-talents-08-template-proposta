@@ -6,6 +6,11 @@ import org.springframework.stereotype.Component;
 public class MascaraDados {
 
     public String generico(String str) {
+
+        if (str == null) {
+            return "";
+        }
+
         char[] strChars = str.toCharArray();
         for( int i = 0; i < strChars.length - 4; i++ ) {
             strChars[i] = 'X';

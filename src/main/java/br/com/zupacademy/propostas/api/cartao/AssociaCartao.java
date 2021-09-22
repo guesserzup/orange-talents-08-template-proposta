@@ -1,21 +1,27 @@
 package br.com.zupacademy.propostas.api.cartao;
 
-import br.com.zupacademy.propostas.api.cartao.connector.CartaoConnector;
+import br.com.zupacademy.propostas.api.analise.AnaliseForm;
+import br.com.zupacademy.propostas.api.cartao.bloqueio.BloqueioController;
+import br.com.zupacademy.propostas.api.cartao.client.CartaoClient;
+import br.com.zupacademy.propostas.proposta.EnumEstadoProposta;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
+import javax.transaction.Transactional;
 
 @Component
 public class AssociaCartao {
 
+    Logger LOGGER = LoggerFactory.getLogger(AssociaCartao.class);
+
     @Autowired
-    private CartaoConnector cartaoConnector;
+    private CartaoClient cartaoClient;
 
     @Autowired
     private PropostaRepository propostaRepository;
@@ -23,25 +29,21 @@ public class AssociaCartao {
     @Autowired
     private CartaoRepository cartaoRepository;
 
+    @Transactional
     @Scheduled(fixedRateString = "${associar.cartao.tempo.schedule}")
     public void associa() {
-        List<Proposta> listaPropostas = propostaRepository.findAllByEstadoPropostaAndNumCartaoIsNull("ELEGIVEL");
+        Proposta proposta = propostaRepository.findByEstadoPropostaAndNumCartaoIsNull(EnumEstadoProposta.ELEGIVEL);
 
-        listaPropostas.forEach(proposta -> {
-            HashMap<String, String> dadosProposta = new HashMap<>();
-            dadosProposta.put("documento", proposta.getDocumento());
-            dadosProposta.put("nome", proposta.getNome());
-            dadosProposta.put("idProposta", proposta.getId().toString());
+        try {
+            AnaliseForm analiseForm = new AnaliseForm(proposta.getDocumento(), proposta.getNome(), proposta.getId());
+            Cartao cartao = cartaoClient.associarCartao(analiseForm);
+            proposta.associaCartao(cartao);
 
-            try {
-                Cartao cartao = cartaoConnector.associarCartao(dadosProposta);
-                proposta.setNumCartao(cartao.getNumCartao());
-
-                propostaRepository.save(proposta);
-                cartaoRepository.save(cartao);
-            } catch (FeignException exception) {
-                exception.getMessage();
-            }
-        });
+            cartaoRepository.save(cartao);
+            propostaRepository.save(proposta);
+        } catch (FeignException exception) {
+            LOGGER.error("Erro na rotina de associar cartão.", exception);
+            exception.getMessage();
+        }
     }
 }

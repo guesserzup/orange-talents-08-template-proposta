@@ -9,11 +9,11 @@ public class PropostaDto {
     private String nome;
     private String endereco;
     private BigDecimal salario;
-    private String estadoProposta;
+    private EnumEstadoProposta estadoProposta;
     private String numeroCartao;
 
     public PropostaDto(String documento, String email, String nome, String endereco, BigDecimal salario,
-                       String estadoProposta, String numCartao) {
+                       EnumEstadoProposta estadoProposta, String numCartao) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;
@@ -43,7 +43,7 @@ public class PropostaDto {
         return salario;
     }
 
-    public String getEstadoProposta() { return estadoProposta; }
+    public EnumEstadoProposta getEstadoProposta() { return estadoProposta; }
 
     public String getNumeroCartao() { return numeroCartao; }
 }

@@ -45,4 +45,14 @@ public class RestControllerAdviceGenerico {
 
         return erros;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public RetornaErro validacaoGenericaException(Exception exception) {
+        RetornaErro erros = new RetornaErro();
+
+        erros.AddError(exception.getLocalizedMessage());
+
+        return erros;
+    }
 }

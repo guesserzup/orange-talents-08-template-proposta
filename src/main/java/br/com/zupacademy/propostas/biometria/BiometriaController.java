@@ -23,18 +23,18 @@ public class BiometriaController {
 
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/cartao/{id}/biometria")
-    public ResponseEntity<BiometriaDto> cadastrar(@PathVariable("id") String numCartao, @RequestBody @Valid BiometriaForm form, UriComponentsBuilder uri) {
+    @PostMapping("/cartao/{idCartao}/biometria")
+    public ResponseEntity<BiometriaDto> cadastrar(@PathVariable("idCartao") Long idCartao, @RequestBody @Valid BiometriaForm form, UriComponentsBuilder uri) {
 
         Cartao cartao = cartaoRepository
-                .findById(numCartao)
+                .findById(idCartao)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não existente na base!"));
 
         Biometria biometria = form.toModel(cartao);
 
-        form.validacaoBiometria(biometria.getFingerprint());
+        biometria.validacaoBiometria(biometria.getFingerprint());
 
-        cartao.setBiometria(biometria);
+        cartao.associaBiometria(biometria);
         biometriaRepository.save(biometria);
         cartaoRepository.save(cartao);
 

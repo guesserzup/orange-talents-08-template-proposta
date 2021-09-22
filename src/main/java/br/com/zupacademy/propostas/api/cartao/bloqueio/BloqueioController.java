@@ -2,9 +2,11 @@ package br.com.zupacademy.propostas.api.cartao.bloqueio;
 
 import br.com.zupacademy.propostas.api.cartao.Cartao;
 import br.com.zupacademy.propostas.api.cartao.CartaoRepository;
-import br.com.zupacademy.propostas.api.cartao.connector.CartaoConnector;
+import br.com.zupacademy.propostas.api.cartao.client.CartaoClient;
 import br.com.zupacademy.propostas.erro.RegraNegocioException;
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,37 +27,40 @@ public class BloqueioController {
     private BloqueioRepository bloqueioRepository;
 
     @Autowired
-    private CartaoConnector cartaoConnector;
+    private CartaoClient cartaoClient;
+
+    Logger LOGGER = LoggerFactory.getLogger(BloqueioController.class);
 
     @Transactional
-    @PostMapping("/cartao/{numCartao}/bloqueio")
-    public BloqueioDto bloquear(@PathVariable("numCartao") String numCartao, HttpServletRequest request,
+    @PostMapping("/cartao/{idCartao}/bloqueio")
+    public BloqueioDto bloquear(@PathVariable("idCartao") Long idCartao, HttpServletRequest request,
                                 @AuthenticationPrincipal Jwt tokenJwt) {
 
-        Cartao cartao = cartaoRepository.findById(numCartao)
+        Cartao cartao = cartaoRepository.findById(idCartao)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não existente na base de dados."));
 
         if (!cartao.getProposta().getDocumento().equals(tokenJwt.getClaims().get("documento"))) {
-            throw new RegraNegocioException("Cartão informado não está associado com o usuário.", "cartao", numCartao);
+            LOGGER.warn("Tentativa de alterar cartão não associado ao usuário.");
+            throw new RegraNegocioException("Cartão informado não está associado com o usuário.", "cartao", idCartao);
         }
 
         if (cartao.isBloqueado()) {
-            throw new RegraNegocioException("Cartão informado já está bloqueado no sistema.", "cartao", numCartao);
+            LOGGER.warn("Tentativa de bloquear cartão já bloqueado.");
+            throw new RegraNegocioException("Cartão informado já está bloqueado no sistema.", "cartao", idCartao);
         }
 
         String ip = request.getRemoteAddr();
         String agent = request.getHeader("User-Agent");
 
         try {
-            cartaoConnector.bloquearCartaoSistemaLegado(new BloqueioForm(cartao.getNumCartao()));
+            cartaoClient.bloquearCartaoSistemaLegado(cartao.getNumCartao(), new BloqueioForm(cartao.getNumCartao()));
         } catch (FeignException e) {
+            LOGGER.error("Erro processando request do Feign Client", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
-        cartao.setBloqueado(true);
         Bloqueio bloqueio = new Bloqueio(ip, agent, cartao);
 
-        cartaoRepository.save(cartao);
         bloqueioRepository.save(bloqueio);
 
         return new BloqueioDto(bloqueio.getHoraBloqueio(), bloqueio.getIp(), bloqueio.getAgent());

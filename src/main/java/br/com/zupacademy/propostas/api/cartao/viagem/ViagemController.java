@@ -28,7 +28,7 @@ public class ViagemController {
     private MascaraDados mascaraDados;
 
     @PostMapping("/cartao/{numCartao}/viagem")
-    public ViagemDto cadastraAviso(@PathVariable("numCartao") String numCartao, @RequestBody ViagemForm form,
+    public ViagemDto cadastraAviso(@PathVariable("numCartao") Long numCartao, @RequestBody ViagemForm form,
                                    HttpServletRequest request, @AuthenticationPrincipal Jwt tokenJwt) {
 
         Cartao cartao =
@@ -41,7 +41,7 @@ public class ViagemController {
 
         viagem.setIp(ip);
         viagem.setAgent(agent);
-        viagem.setNumCartao(numCartao);
+        viagem.setNumCartao(cartao.getNumCartao());
 
         viagemRepository.save(viagem);
 

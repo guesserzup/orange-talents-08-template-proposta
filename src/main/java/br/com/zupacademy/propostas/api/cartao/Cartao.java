@@ -4,7 +4,6 @@ import br.com.zupacademy.propostas.api.cartao.bloqueio.Bloqueio;
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.bytebuddy.implementation.bind.annotation.Default;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,9 +15,12 @@ import java.util.List;
 public class Cartao {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idCartao;
+
     @NotNull
+    @JsonProperty("id")
     @Column(unique = true)
-    @JsonProperty(value = "id")
     private String numCartao;
 
     private LocalDateTime emitidoEm;
@@ -44,9 +46,13 @@ public class Cartao {
 
     private boolean bloqueado;
 
+    public void associaBiometria(Biometria biometria) { this.biometria.add(biometria); }
+
     public String getNumeroCartao() {
         return numCartao;
     }
+
+    public Long getIdCartao() { return idCartao; }
 
     public LocalDateTime getEmitidoEm() {
         return emitidoEm;
@@ -74,13 +80,9 @@ public class Cartao {
 
     public List<Biometria> getBiometria() { return biometria; }
 
-    public void setBiometria(Biometria biometria) { this.biometria.add(biometria); }
-
     public Bloqueio getBloqueio() { return bloqueio; }
 
     public boolean isBloqueado() { return bloqueado; }
-
-    public void setBloqueado(boolean bloqueado) { this.bloqueado = bloqueado; }
 
     public Proposta getProposta() { return proposta; }
 

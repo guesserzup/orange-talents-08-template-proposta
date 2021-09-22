@@ -16,13 +16,13 @@ public class Analise {
 
     private String nome;
 
-    private String resultadoSolicitacao;
+    private EnumResultadoAnalise resultadoSolicitacao;
 
     @Deprecated
     public Analise() {
     }
 
-    public Analise(Long idProposta, String documento, String nome, String resultadoSolicitacao) {
+    public Analise(Long idProposta, String documento, String nome, EnumResultadoAnalise resultadoSolicitacao) {
         this.idProposta = idProposta;
         this.documento = documento;
         this.nome = nome;
@@ -41,7 +41,7 @@ public class Analise {
         return nome;
     }
 
-    public String getResultadoSolicitacao() {
+    public EnumResultadoAnalise getResultadoSolicitacao() {
         return resultadoSolicitacao;
     }
 }

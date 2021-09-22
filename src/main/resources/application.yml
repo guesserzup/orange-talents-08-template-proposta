@@ -42,6 +42,20 @@ management:
     prometheus:
       enabled: true
 
+# Feign Configs
+feign:
+    AnaliseApi:
+      url: ${FINANCEIRO_URL:http://localhost:9999/api/}
+    CartaoApi:
+      url: ${APICARTOES_URL:http://localhost:8888/api/}
+
+# Log Configs
+log4j:
+  appender:
+    MAIN: org.apache.log4j.ConsoleAppender
+    MAIN.layout: org.apache.log4j.PatternLayout
+  rootLogger: DEBUG, MAIN
+
 #Rotina Cartão
 associar:
   cartao:
