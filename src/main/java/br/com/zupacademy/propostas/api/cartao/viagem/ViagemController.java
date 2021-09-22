@@ -24,29 +24,21 @@ public class ViagemController {
     @Autowired
     private CartaoRepository cartaoRepository;
 
-    @Autowired
-    private MascaraDados mascaraDados;
-
-    @PostMapping("/cartao/{numCartao}/viagem")
-    public ViagemDto cadastraAviso(@PathVariable("numCartao") Long numCartao, @RequestBody ViagemForm form,
+    @PostMapping("/cartao/{idCartao}/viagem")
+    public ViagemDto cadastraAviso(@PathVariable("idCartao") Long idCartao, @RequestBody ViagemForm form,
                                    HttpServletRequest request, @AuthenticationPrincipal Jwt tokenJwt) {
 
-        Cartao cartao =
-                cartaoRepository.findById(numCartao).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não existente na base de dados."));
-
-        Viagem viagem = form.toModel();
+        Cartao cartao = cartaoRepository.findById(idCartao)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não existente na base de dados."));
 
         String ip = request.getRemoteAddr();
         String agent = request.getHeader("User-Agent");
 
-        viagem.setIp(ip);
-        viagem.setAgent(agent);
-        viagem.setNumCartao(cartao.getNumCartao());
+        Viagem viagem = new Viagem(cartao.getIdCartao(), form.getDestinoViagem(), form.getDataTerminoViagem(), ip, agent);
 
         viagemRepository.save(viagem);
 
-        return new ViagemDto(mascaraDados.generico(viagem.getNumCartao()),
-                mascaraDados.generico(viagem.getDestinoViagem()), viagem.getDataTerminoViagem(),
-                mascaraDados.generico(viagem.getIp()), viagem.getAgent());
+        return new ViagemDto(viagem.getIdCartao(), MascaraDados.generico(viagem.getDestinoViagem()), viagem.getDataTerminoViagem(),
+                MascaraDados.generico(viagem.getIp()), viagem.getAgent());
     }
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class ViagemDto {
 
-    private String numCartao;
+    private Long idCartao;
     private String destinoViagem;
     private LocalDateTime dataTerminoViagem;
     private final LocalDateTime dataCriacaoAviso = LocalDateTime.now();
@@ -15,16 +15,16 @@ public class ViagemDto {
     public ViagemDto() {
     }
 
-    public ViagemDto(String numCartao, String destinoViagem, LocalDateTime dataTerminoViagem, String ip, String agent) {
-        this.numCartao = numCartao;
+    public ViagemDto(Long numCartao, String destinoViagem, LocalDateTime dataTerminoViagem, String ip, String agent) {
+        this.idCartao = numCartao;
         this.destinoViagem = destinoViagem;
         this.dataTerminoViagem = dataTerminoViagem;
         this.ip = ip;
         this.agent = agent;
     }
 
-    public String getNumCartao() {
-        return numCartao;
+    public Long getIdCartao() {
+        return idCartao;
     }
 
     public String getDestinoViagem() {

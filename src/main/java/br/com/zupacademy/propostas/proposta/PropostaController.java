@@ -23,9 +23,6 @@ public class PropostaController {
     @Autowired
     private AnaliseClient analiseClient;
 
-    @Autowired
-    private MascaraDados mascaraDados;
-
     @GetMapping("/{idProposta}")
     public PropostaDto busca(@PathVariable("idProposta") Long idProposta) {
         
@@ -33,8 +30,8 @@ public class PropostaController {
                 .findById(idProposta)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposta informada não existe"));
 
-        return new PropostaDto(mascaraDados.generico(proposta.getDocumento()), mascaraDados.generico(proposta.getEmail()), mascaraDados.generico(proposta.getNome()),
-                mascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), mascaraDados.generico(proposta.getNumCartao()));
+        return new PropostaDto(MascaraDados.generico(proposta.getDocumento()), MascaraDados.generico(proposta.getEmail()), MascaraDados.generico(proposta.getNome()),
+                MascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), MascaraDados.generico(proposta.getNumCartao()));
     }
 
     @PostMapping
@@ -46,7 +43,7 @@ public class PropostaController {
         proposta = propostaRepository.save(proposta);
 
         URI location = uri.path("/propostas/{id}").build(proposta.getId());
-        return ResponseEntity.created(location).body(new PropostaDto(mascaraDados.generico(proposta.getDocumento()), mascaraDados.generico(proposta.getEmail()),
-                mascaraDados.generico(proposta.getNome()), mascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
+        return ResponseEntity.created(location).body(new PropostaDto(MascaraDados.generico(proposta.getDocumento()), MascaraDados.generico(proposta.getEmail()),
+                MascaraDados.generico(proposta.getNome()), MascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
     }
 }

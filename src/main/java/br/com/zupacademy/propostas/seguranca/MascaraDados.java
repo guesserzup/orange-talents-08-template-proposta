@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MascaraDados {
 
-    public String generico(String str) {
+    public static String generico(String str) {
 
         if (str == null) {
             return "";

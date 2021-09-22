@@ -4,12 +4,9 @@ import br.com.zupacademy.propostas.api.analise.Analise;
 import br.com.zupacademy.propostas.api.analise.AnaliseForm;
 import br.com.zupacademy.propostas.api.analise.EnumResultadoAnalise;
 import br.com.zupacademy.propostas.api.analise.client.AnaliseClient;
-import br.com.zupacademy.propostas.api.cartao.AssociaCartao;
 import br.com.zupacademy.propostas.api.cartao.Cartao;
 import br.com.zupacademy.propostas.validacao.CpfCnpj;;
 import feign.FeignException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,8 +17,6 @@ import java.math.BigDecimal;
 
 @Entity
 public class Proposta {
-
-    Logger LOGGER = LoggerFactory.getLogger(Proposta.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,7 +67,6 @@ public class Proposta {
         try {
             analise = analiseClient.solicitaAnalise(analiseForm);
         } catch (FeignException feignException) {
-            LOGGER.error("Erro na rotina que analisa a proposta, feignException", feignException);
             feignException.printStackTrace();
         }
 

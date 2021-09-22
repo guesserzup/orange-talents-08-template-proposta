@@ -1,7 +1,5 @@
 package br.com.zupacademy.propostas.api.cartao.viagem;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,7 +31,4 @@ public class ViagemForm {
     public LocalDateTime getDataTerminoViagem() {
         return dataTerminoViagem;
     }
-
-    public Viagem toModel() { return new Viagem(this.destinoViagem, this.dataTerminoViagem); }
-
 }

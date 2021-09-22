@@ -1,7 +1,5 @@
 package br.com.zupacademy.propostas.api.cartao.viagem;
 
-import br.com.zupacademy.propostas.api.cartao.Cartao;
-
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
@@ -16,8 +14,7 @@ public class Viagem {
     private Long id;
 
     @NotNull
-    @NotBlank
-    private String numCartao;
+    private Long idCartao;
 
     @NotNull
     @NotBlank
@@ -37,9 +34,9 @@ public class Viagem {
     public Viagem() {
     }
 
-    public Viagem(String numCartao, String destinoViagem, LocalDateTime dataTerminoViagem, String ip,
+    public Viagem(Long idCartao, String destinoViagem, LocalDateTime dataTerminoViagem, String ip,
                   String agent) {
-        this.numCartao = numCartao;
+        this.idCartao = idCartao;
         this.destinoViagem = destinoViagem;
         this.dataTerminoViagem = dataTerminoViagem;
         this.ip = ip;
@@ -55,8 +52,8 @@ public class Viagem {
         return id;
     }
 
-    public String getNumCartao() {
-        return numCartao;
+    public Long getIdCartao() {
+        return idCartao;
     }
 
     public String getDestinoViagem() {
@@ -77,17 +74,5 @@ public class Viagem {
 
     public String getAgent() {
         return agent;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public void setAgent(String agent) {
-        this.agent = agent;
-    }
-
-    public void setNumCartao(String numCartao) {
-        this.numCartao = numCartao;
     }
 }
