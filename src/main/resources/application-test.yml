@@ -1,0 +1,66 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: password
+    url: jdbc:postgresql://localhost:5432/keycloak
+    username: keycloak
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/auth/realms/Propostas
+          jwk-set-uri: http://localhost:18080/auth/realms/Propostas/protocol/openid-connect/certs
+
+info:
+  app:
+    description: '@project.description@'
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      version: '@java.version@'
+    name: '@project.name@'
+    version: '@project.version@'
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    metrics:
+      enabled: false
+    prometheus:
+      enabled: true
+
+# Feign Configs
+feign:
+    AnaliseApi:
+      url: ${FINANCEIRO_URL:http://localhost:9999/api/}
+    CartaoApi:
+      url: ${APICARTOES_URL:http://localhost:8888/api/}
+
+# Log Configs
+log4j:
+  appender:
+    MAIN: org.apache.log4j.ConsoleAppender
+    MAIN.layout: org.apache.log4j.PatternLayout
+  rootLogger: DEBUG, MAIN
+  logging:
+    pattern:
+      console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+
+#Rotina Cartão
+associar:
+  cartao:
+    tempo:
+      schedule: 20000
