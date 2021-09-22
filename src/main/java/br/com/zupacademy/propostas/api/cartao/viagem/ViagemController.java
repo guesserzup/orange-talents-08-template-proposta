@@ -5,8 +5,8 @@ import br.com.zupacademy.propostas.api.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.api.cartao.client.CartaoClient;
 import br.com.zupacademy.propostas.seguranca.MascaraDados;
 import feign.FeignException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @RestController
 public class ViagemController {
 
-    Logger LOGGER = LoggerFactory.getLogger(ViagemController.class);
+    private static final Logger LOGGER = LogManager.getLogger(ViagemController.class);
 
     @Autowired
     private ViagemRepository viagemRepository;

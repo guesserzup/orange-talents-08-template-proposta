@@ -6,8 +6,8 @@ import br.com.zupacademy.propostas.proposta.EnumEstadoProposta;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import feign.FeignException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 @Component
 public class AssociaCartao {
 
-    Logger LOGGER = LoggerFactory.getLogger(AssociaCartao.class);
+    private static final Logger LOGGER = LogManager.getLogger(AssociaCartao.class);
 
     @Autowired
     private CartaoClient cartaoClient;
