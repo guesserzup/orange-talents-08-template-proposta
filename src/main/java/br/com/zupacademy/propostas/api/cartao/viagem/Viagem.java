@@ -1,5 +1,8 @@
 package br.com.zupacademy.propostas.api.cartao.viagem;
 
+import br.com.zupacademy.propostas.api.cartao.client.CartaoClient;
+import feign.FeignException;
+
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
@@ -26,6 +29,8 @@ public class Viagem {
 
     private final LocalDateTime dataCriacaoAviso = LocalDateTime.now();
 
+    private EnumResultadoAvisoViagem statusSistemaLegado;
+
     private String ip;
 
     private String agent;
@@ -43,14 +48,30 @@ public class Viagem {
         this.agent = agent;
     }
 
-    public Viagem(String destinoViagem, LocalDateTime dataTerminoViagem) {
-        this.destinoViagem = destinoViagem;
-        this.dataTerminoViagem = dataTerminoViagem;
+    public void comunicaSistemaLegado(String numCartao, CartaoClient cartaoClient) {
+        ViagemForm viagemForm = new ViagemForm(this.destinoViagem, this.dataTerminoViagem);
+        AvisoViagemResponse avisoViagemResponse = null;
+
+        try {
+            avisoViagemResponse = cartaoClient.comunicarAvisoDeViagemAoSistemaLegado(numCartao, viagemForm);
+        } catch (FeignException feignException) {
+            feignException.printStackTrace();
+        }
+
+        assert avisoViagemResponse != null;
+
+        if (avisoViagemResponse.getResultadoAvisoViagem() == EnumResultadoAvisoViagem.CRIADO) {
+            this.statusSistemaLegado = EnumResultadoAvisoViagem.CRIADO;
+        } else {
+            this.statusSistemaLegado = EnumResultadoAvisoViagem.FALHA;
+        }
     }
 
     public Long getId() {
         return id;
     }
+
+    public EnumResultadoAvisoViagem getStatusSistemaLegado() { return statusSistemaLegado; }
 
     public Long getIdCartao() {
         return idCartao;

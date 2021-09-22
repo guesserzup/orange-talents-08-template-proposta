@@ -55,6 +55,10 @@ log4j:
     MAIN: org.apache.log4j.ConsoleAppender
     MAIN.layout: org.apache.log4j.PatternLayout
   rootLogger: DEBUG, MAIN
+  logging:
+    pattern:
+      console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      file: "%d %p %c{1.} [%t] %m%n"
 
 #Rotina Cartão
 associar:

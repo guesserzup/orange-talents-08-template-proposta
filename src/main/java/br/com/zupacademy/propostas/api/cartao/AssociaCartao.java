@@ -1,7 +1,6 @@
 package br.com.zupacademy.propostas.api.cartao;
 
 import br.com.zupacademy.propostas.api.analise.AnaliseForm;
-import br.com.zupacademy.propostas.api.cartao.bloqueio.BloqueioController;
 import br.com.zupacademy.propostas.api.cartao.client.CartaoClient;
 import br.com.zupacademy.propostas.proposta.EnumEstadoProposta;
 import br.com.zupacademy.propostas.proposta.Proposta;
@@ -34,15 +33,20 @@ public class AssociaCartao {
     public void associa() {
         Proposta proposta = propostaRepository.findByEstadoPropostaAndNumCartaoIsNull(EnumEstadoProposta.ELEGIVEL);
 
+        if (proposta == null) {
+            return;
+        }
+
         try {
             AnaliseForm analiseForm = new AnaliseForm(proposta.getDocumento(), proposta.getNome(), proposta.getId());
             Cartao cartao = cartaoClient.associarCartao(analiseForm);
             proposta.associaCartao(cartao);
 
             cartaoRepository.save(cartao);
+            LOGGER.info("Cartão {} associado com sucesso!", cartao.getIdCartao());
             propostaRepository.save(proposta);
         } catch (FeignException exception) {
-            LOGGER.error("Erro na rotina de associar cartão.", exception);
+            LOGGER.error("Erro na rotina de associar cartão: {}", exception.getMessage());
             exception.getMessage();
         }
     }
