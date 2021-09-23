@@ -146,6 +146,7 @@ services:
       FINANCEIRO_URL: http://analise:9999/api/solicitacao
       APICARTOES_URL: http://contas:8888/api/cartoes
       SERVER_PORT: 8080
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
     depends_on:
       - analise
       - contas

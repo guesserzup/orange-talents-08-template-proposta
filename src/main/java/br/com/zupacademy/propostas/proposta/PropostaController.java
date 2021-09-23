@@ -3,6 +3,8 @@ package br.com.zupacademy.propostas.proposta;
 import br.com.zupacademy.propostas.api.analise.client.AnaliseClient;
 import br.com.zupacademy.propostas.seguranca.MascaraDados;
 import feign.FeignException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,9 @@ public class PropostaController {
     @Autowired
     private AnaliseClient analiseClient;
 
+    @Autowired
+    private Tracer tracer;
+
     @GetMapping("/{idProposta}")
     public PropostaDto busca(@PathVariable("idProposta") Long idProposta) {
         
@@ -37,6 +42,9 @@ public class PropostaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> cadastra(@RequestBody @Valid PropostaForm form, UriComponentsBuilder uri) throws FeignException {
+        Span activeSpan = tracer.activeSpan();
+        activeSpan.setTag("user.email", form.getEmail());
+
         Proposta proposta = form.toModel();
         proposta.analisaProposta(analiseClient);
 
