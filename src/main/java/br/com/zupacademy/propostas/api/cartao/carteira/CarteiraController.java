@@ -42,9 +42,9 @@ public class CarteiraController {
 
         CadastroCarteiraDigitalResponse responseAssociacaoLegado = null;
 
-        if (cartao.temCarteira()) {
+        if (cartao.getCarteiras().toString().contains(form.getCarteira().toString())) {
             LOGGER.warn("Tentativa de associar cartão {} com carteira {} já associada", cartao.getIdCartao(), form.getCarteira());
-            throw new RegraNegocioException("Cartão já está com esta carteira associada.", "Cartao", "cartao");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cartão já está com esta carteira associada.");
         }
 
         try {
@@ -54,10 +54,12 @@ public class CarteiraController {
             LOGGER.error("Falha ao associar carteira digital no sistema legado: {}", exception.getMessage());
         }
 
+        assert responseAssociacaoLegado != null;
+
         Carteira carteira = new Carteira(form.getCarteira(), responseAssociacaoLegado.getId(), cartao);
 
-        cartaoRepository.save(cartao);
         carteiraRepository.save(carteira);
+        cartaoRepository.save(cartao);
 
         URI location = uri.path("/cartao/{idCartao}/carteiras").build(carteira.getId());
         return ResponseEntity.created(location).body(new CarteiraDto(responseAssociacaoLegado.getResultado(), responseAssociacaoLegado.getId()));

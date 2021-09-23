@@ -17,6 +17,7 @@ public class Carteira {
     private String idCarteiraLegado;
 
     @ManyToOne
+    @JoinColumn(name = "cartao_id_cartao")
     private Cartao cartao;
 
     @Deprecated
@@ -43,5 +44,10 @@ public class Carteira {
 
     public Cartao getCartao() {
         return cartao;
+    }
+
+    @Override
+    public String toString() {
+        return "Carteira{" + "id=" + id + ", carteira=" + carteira + ", idCarteiraLegado='" + idCarteiraLegado + '\'' + ", cartao=" + cartao + '}';
     }
 }

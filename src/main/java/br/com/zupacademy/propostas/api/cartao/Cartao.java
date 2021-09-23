@@ -2,6 +2,7 @@ package br.com.zupacademy.propostas.api.cartao;
 
 import br.com.zupacademy.propostas.api.cartao.bloqueio.Bloqueio;
 import br.com.zupacademy.propostas.api.cartao.carteira.Carteira;
+import br.com.zupacademy.propostas.api.cartao.carteira.EnumCarteira;
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,14 +46,12 @@ public class Cartao {
     @OneToOne(mappedBy = "cartao")
     private Proposta proposta;
 
-    @OneToOne(mappedBy = "cartao")
-    private Carteira carteira;
+    @OneToMany(mappedBy = "cartao")
+    private List<Carteira> carteiras;
 
-    public Carteira getCarteira() { return carteira; }
+    public List<Carteira> getCarteiras() { return carteiras; }
 
-    public boolean temCarteira() {
-        return this.carteira != null;
-    }
+    public boolean temCarteira() { return this.carteiras != null; }
 
     private boolean bloqueado;
 
