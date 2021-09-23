@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -38,19 +37,14 @@ class PropostaControllerTest {
 
     @Test
     void deveCadastrarNovaProposta() throws Exception {
-        PropostaForm form = new PropostaForm("01005446067",
-                "jdoe@zup.com.br","John Doe","John's Doe St.", new BigDecimal(2301));
+        PropostaForm form = new PropostaForm("01005446067", "jdoe@zup.com.br", "John Doe", "John's Doe St.",
+                new BigDecimal(2301));
 
         Analise analiseFinanceira = new Analise(1L, "01005446067", "John Doe", EnumResultadoAnalise.SEM_RESTRICAO);
         Mockito.when(analiseClient.solicitaAnalise(Mockito.any())).thenReturn(analiseFinanceira);
 
-        mvc.perform(MockMvcRequestBuilders.post("/propostas")
-                        .content(new ObjectMapper().writeValueAsString(form))
-                        .contentType(MediaType.APPLICATION_JSON))
-
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.header().exists("Location"))
-                .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
+        mvc.perform(MockMvcRequestBuilders.post("/propostas").content(new ObjectMapper().writeValueAsString(form)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isCreated()).andExpect(MockMvcResultMatchers.header().exists("Location")).andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
         Assertions.assertEquals(propostaRepository.findByDocumento("01005446067").getEstadoProposta(),
                 EnumEstadoProposta.ELEGIVEL);
@@ -58,16 +52,13 @@ class PropostaControllerTest {
 
     @Test
     void naoDeveCadastrarPropostaComDocumentoRepetido() throws Exception {
-        PropostaForm formJane = new PropostaForm("01005446067",
-                "janedoe@zup.com.br","Jane Doe","Jane's Doe St.", new BigDecimal(2501));
+        PropostaForm formJane = new PropostaForm("01005446067", "janedoe@zup.com.br", "Jane Doe", "Jane's Doe St.",
+                new BigDecimal(2501));
 
         Analise analiseFinanceiraJane = new Analise(2L, "01005446067", "Jane Doe", EnumResultadoAnalise.SEM_RESTRICAO);
         Mockito.when(analiseClient.solicitaAnalise(Mockito.any())).thenReturn(analiseFinanceiraJane);
 
-        mvc.perform(MockMvcRequestBuilders.post("/propostas")
-                        .content(new ObjectMapper().writeValueAsString(formJane))
-                        .contentType(MediaType.APPLICATION_JSON))
-
+        mvc.perform(MockMvcRequestBuilders.post("/propostas").content(new ObjectMapper().writeValueAsString(formJane)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         Assertions.assertEquals(propostaRepository.findAllByDocumento("01005446067").size(), 1);
