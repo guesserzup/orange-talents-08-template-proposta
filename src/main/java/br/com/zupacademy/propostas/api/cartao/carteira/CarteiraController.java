@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -35,7 +36,7 @@ public class CarteiraController {
     private CartaoClient cartaoClient;
 
     @PostMapping(value = "/cartao/{idCartao}/carteiras")
-    public ResponseEntity<?> associaCarteiraDigital(@PathVariable("idCartao") Long idCartao, @RequestBody CarteiraForm form, UriComponentsBuilder uri) {
+    public ResponseEntity<?> associaCarteiraDigital(@PathVariable("idCartao") Long idCartao, @Valid @RequestBody CarteiraForm form, UriComponentsBuilder uri) {
 
         Cartao cartao = cartaoRepository.findById(idCartao)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não existente na base de dados."));
