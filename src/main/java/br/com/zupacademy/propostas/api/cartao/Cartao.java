@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.api.cartao;
 
 import br.com.zupacademy.propostas.api.cartao.bloqueio.Bloqueio;
+import br.com.zupacademy.propostas.api.cartao.carteira.Carteira;
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,6 +44,15 @@ public class Cartao {
 
     @OneToOne(mappedBy = "cartao")
     private Proposta proposta;
+
+    @OneToOne(mappedBy = "cartao")
+    private Carteira carteira;
+
+    public Carteira getCarteira() { return carteira; }
+
+    public boolean temCarteira() {
+        return this.carteira != null;
+    }
 
     private boolean bloqueado;
 
