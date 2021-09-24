@@ -48,8 +48,8 @@ public class Proposta {
     @OneToOne
     private Cartao cartao;
 
-    public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
-        this.documento = documento;
+    public Proposta(DocumentoEncrypt documento, String email, String nome, String endereco, BigDecimal salario) {
+        this.documento = documento.hash();
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;

@@ -39,7 +39,7 @@ public class PropostaForm {
     }
 
     public Proposta toModel() {
-        return new Proposta(this.documento, this.email, this.nome, this.endereco, this.salario);
+        return new Proposta(new DocumentoEncrypt(this.documento), this.email, this.nome, this.endereco, this.salario);
     }
 
     public String getDocumento() {

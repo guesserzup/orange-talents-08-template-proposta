@@ -40,7 +40,7 @@ public class PropostaController {
                 .findById(idProposta)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposta informada não existe"));
 
-        return new PropostaDto(MascaraDados.generico(proposta.getDocumento()), MascaraDados.generico(proposta.getEmail()), MascaraDados.generico(proposta.getNome()),
+        return new PropostaDto(proposta.getDocumento(), MascaraDados.generico(proposta.getEmail()), MascaraDados.generico(proposta.getNome()),
                 MascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), MascaraDados.generico(proposta.getNumCartao()));
     }
 
@@ -61,7 +61,7 @@ public class PropostaController {
 
         customCounter.increment();
 
-        return ResponseEntity.created(location).body(new PropostaDto(MascaraDados.generico(proposta.getDocumento()), MascaraDados.generico(proposta.getEmail()),
+        return ResponseEntity.created(location).body(new PropostaDto(proposta.getDocumento(), MascaraDados.generico(proposta.getEmail()),
                 MascaraDados.generico(proposta.getNome()), MascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
     }
 }
