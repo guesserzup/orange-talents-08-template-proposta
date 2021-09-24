@@ -3,6 +3,8 @@ package br.com.zupacademy.propostas.proposta;
 import br.com.zupacademy.propostas.api.analise.client.AnaliseClient;
 import br.com.zupacademy.propostas.seguranca.MascaraDados;
 import feign.FeignException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class PropostaController {
     @Autowired
     private Tracer tracer;
 
+    @Autowired
+    private MeterRegistry registry;
+
     @GetMapping("/{idProposta}")
     public PropostaDto busca(@PathVariable("idProposta") Long idProposta) {
         
@@ -45,12 +50,17 @@ public class PropostaController {
         Span activeSpan = tracer.activeSpan();
         activeSpan.setTag("user.email", form.getEmail());
 
+        Counter customCounter = Counter.builder("propostas_requests").register(registry);
+
         Proposta proposta = form.toModel();
         proposta.analisaProposta(analiseClient);
 
         proposta = propostaRepository.save(proposta);
 
         URI location = uri.path("/propostas/{id}").build(proposta.getId());
+
+        customCounter.increment();
+
         return ResponseEntity.created(location).body(new PropostaDto(MascaraDados.generico(proposta.getDocumento()), MascaraDados.generico(proposta.getEmail()),
                 MascaraDados.generico(proposta.getNome()), MascaraDados.generico(proposta.getEndereco()), proposta.getSalario(), proposta.getEstadoProposta(), proposta.getNumCartao()));
     }
